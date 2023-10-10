@@ -15,7 +15,10 @@ GLvoid Mouse(int button, int state, int x, int y);
 GLvoid Motion(int x, int y);
 
 bool click = false;
-
+bool PointClick = false;
+bool PointClick2 = false;
+bool PointClick3 = false;
+bool PointClick4 = false;
 
 GLint width, height;
 GLuint shaderProgramID; //--- 세이더 프로그램 이름
@@ -134,6 +137,7 @@ void main(int argc, char** argv)	//--- 윈도우 출력하고 콜백함수 설정
 	glutReshapeFunc(Reshape);
 	glutMouseFunc(Mouse);
 	glutKeyboardFunc(Keyboard);
+	glutMotionFunc(Motion);
 	rect[0] = Rect(400, 300);
 	glutMainLoop();
 }
@@ -248,7 +252,33 @@ GLvoid Mouse(int button, int state, int x, int y)
 		if (rect->vertex[0] <= X && X <= rect->vertex[3] && rect->vertex[7] <= Y && rect->vertex[1] >= Y)
 		{
 			std::cout << "클릭이 되었음" << endl;
-			click = true;
+
+			if (rect->vertex[0]-0.1f <X && rect->vertex[0]+0.1f >X && rect->vertex[1] - 0.1f <Y && rect->vertex[1]+ 0.1f >Y)
+			{
+				std::cout << "왼쪽 상단 꼭짓점 클릭이 되었음" << endl;
+
+				PointClick = true;
+			}
+			else if (rect->vertex[3] - 0.1f < X && rect->vertex[3] + 0.1f > X && rect->vertex[4] - 0.1f < Y && rect->vertex[4] + 0.1f > Y)
+			{
+				std::cout << "오른쪽 상단 꼭짓점 클릭이 되었음" << endl;
+
+				PointClick2 = true;
+			}
+			else if (rect->vertex[6] - 0.1f < X && rect->vertex[6] + 0.1f > X && rect->vertex[7] - 0.1f < Y && rect->vertex[7] + 0.1f > Y)
+			{
+				std::cout << "오른쪽 하단 꼭짓점 클릭이 되었음" << endl;
+
+				PointClick3 = true;
+			}
+			else if (rect->vertex[12] - 0.1f < X && rect->vertex[12] + 0.1f > X && rect->vertex[13] - 0.1f < Y && rect->vertex[13] + 0.1f > Y)
+			{
+				std::cout << "왼쪽 하단 꼭짓점 클릭이 되었음" << endl;
+
+				PointClick4 = true;
+			}
+			else
+				click = true;
 		}
 	}
 
@@ -256,6 +286,11 @@ GLvoid Mouse(int button, int state, int x, int y)
 	{
 		std::cout << "클릭 해제" << endl;
 		click = false;
+		PointClick = false;
+		PointClick2 = false;
+		PointClick3 = false;
+		PointClick4 = false;
+
 	}
 	glutPostRedisplay();
 }
@@ -264,6 +299,7 @@ GLvoid Motion(int x, int y)
 {
 	float X = (float)x / width * 2.0f - 1.0f;
 	float Y = -(float)y / height * 2.0f + 1.0f;
+
 	if (click == true)
 	{
 		rect->vertex[0] = X - 0.25;
@@ -280,6 +316,38 @@ GLvoid Motion(int x, int y)
 		rect->vertex[16] = Y - 0.25;
 		rect->setVAO();
 	}
+	if (PointClick == true)
+	{
+		rect->vertex[0] = X;
+		rect->vertex[1] = Y;
+		rect->vertex[9] = X;
+		rect->vertex[10] = Y;
+		rect->setVAO();
+	}
+	if (PointClick2 == true)
+	{
+		rect->vertex[3] = X;
+		rect->vertex[4] = Y;
+		rect->setVAO();
+	}
+
+	if (PointClick3 == true)
+	{
+		rect->vertex[6] = X;
+		rect->vertex[7] = Y;
+		rect->vertex[15] = X;
+		rect->vertex[16] = Y;
+		rect->setVAO();
+	}
+
+	if (PointClick4 == true)
+	{
+		rect->vertex[12] = X;
+		rect->vertex[13] = Y;
+		rect->setVAO();
+	}
 	glutPostRedisplay();
+
+	
 
 }
