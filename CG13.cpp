@@ -40,12 +40,13 @@ class Rect {
 
 public:
 	float vertex[18];
+	float faraway[12];
+	float temp[12];
 
 	Rect() {}
 	void setVAO()
 	{
 		glGenVertexArrays(1, &m_vao); //--- VAO 객체 생성, params(갯수, GLuint*)// n개를 받아도 생성되게 하려 
-
 		glBindVertexArray(m_vao); //--- VAO를 바인드하기
 
 		// VBO 객체 생성
@@ -77,27 +78,28 @@ public:
 		float X = (float)x / width * 2.0f - 1.0f;
 		float Y = -(float)y / height * 2.0f + 1.0f;
 
-
 		float r, g, b;
 
+		for (int i = 0; i < 12; i++)
+			faraway[i] = 0.25;
 
-		vertex[0] = X - 0.25;
-		vertex[1] = Y + 0.25;
+		vertex[0] = X - faraway[0];
+		vertex[1] = Y + faraway[1];
 		vertex[2] = 0.0f;
-		vertex[3] = X + 0.25;
-		vertex[4] = Y + 0.25;
+		vertex[3] = X + faraway[2];
+		vertex[4] = Y + faraway[3];
 		vertex[5] = 0.0f;
-		vertex[6] = X + 0.25;
-		vertex[7] = Y - 0.25;
+		vertex[6] = X + faraway[4];
+		vertex[7] = Y - faraway[5];
 		vertex[8] = 0.0f;
-		vertex[9] = X - 0.25;
-		vertex[10] = Y + 0.25;
+		vertex[9] = X - faraway[6];
+		vertex[10] = Y + faraway[7];
 		vertex[11] = 0.0f;
-		vertex[12] = X - 0.25;
-		vertex[13] = Y - 0.25;
+		vertex[12] = X - faraway[8];
+		vertex[13] = Y - faraway[9];
 		vertex[14] = 0.0f;
-		vertex[15] = X + 0.25;
-		vertex[16] = Y - 0.25;
+		vertex[15] = X + faraway[10];
+		vertex[16] = Y - faraway[11];
 		vertex[17] = 0.0f;
 
 		r = (float)(rand() % 256) / 256;
@@ -115,7 +117,6 @@ public:
 		glDrawArrays(GL_TRIANGLES, 0, 6);
 	}
 };
-
 
 Rect rect[1];
 
@@ -141,10 +142,6 @@ void main(int argc, char** argv)	//--- 윈도우 출력하고 콜백함수 설정
 	rect[0] = Rect(400, 300);
 	glutMainLoop();
 }
-
-
-
-
 
 //--- 버텍스 세이더 객체 만들기
 void make_vertexShaders()
@@ -189,7 +186,6 @@ void make_fragmentShaders()
 	}
 }
 
-
 //--- 세이더 프로그램 만들기
 void make_shaderProgram()
 {
@@ -207,9 +203,6 @@ void make_shaderProgram()
 	glUseProgram(shaderProgramID);
 }
 
-
-
-//--- 출력 콜백 함수
 GLvoid drawScene()
 //--- 콜백 함수: 그리기 콜백 함수
 {
@@ -302,52 +295,74 @@ GLvoid Motion(int x, int y)
 
 	if (click == true)
 	{
-		rect->vertex[0] = X - 0.25;
-		rect->vertex[1] = Y + 0.25;
-		rect->vertex[3] = X + 0.25;
-		rect->vertex[4] = Y + 0.25;
-		rect->vertex[6] = X + 0.25;
-		rect->vertex[7] = Y - 0.25;
-		rect->vertex[9] = X - 0.25;
-		rect->vertex[10] = Y + 0.25;
-		rect->vertex[12] = X - 0.25;
-		rect->vertex[13] = Y - 0.25;
-		rect->vertex[15] = X + 0.25;
-		rect->vertex[16] = Y - 0.25;
+		rect->vertex[0] = X - rect->faraway[0];
+		rect->vertex[1] = Y + rect->faraway[1];
+		rect->vertex[3] = X + rect->faraway[2];
+		rect->vertex[4] = Y + rect->faraway[3];
+		rect->vertex[6] = X + rect->faraway[4];
+		rect->vertex[7] = Y - rect->faraway[5];
+		rect->vertex[9] = X - rect->faraway[6];
+		rect->vertex[10] = Y + rect->faraway[7];
+		rect->vertex[12] = X - rect->faraway[8];
+		rect->vertex[13] = Y - rect->faraway[9];
+		rect->vertex[15] = X + rect->faraway[10];
+		rect->vertex[16] = Y - rect->faraway[11];
 		rect->setVAO();
 	}
 	if (PointClick == true)
 	{
+		rect->vertex[0] = rect->temp[0];
+		rect->vertex[1] = rect->temp[1];
+		rect->vertex[9] = rect->temp[2];
+		rect->vertex[10] = rect->temp[3];
 		rect->vertex[0] = X;
 		rect->vertex[1] = Y;
 		rect->vertex[9] = X;
 		rect->vertex[10] = Y;
+		rect->faraway[0] = abs(rect->temp[0] - rect->vertex[0]);
+		rect->faraway[1] = abs(rect->temp[1] - rect->vertex[1]);
+		rect->faraway[6] = abs(rect->temp[2] - rect->vertex[9]);
+		rect->faraway[7] = abs(rect->temp[3] - rect->vertex[10]);
+
 		rect->setVAO();
 	}
 	if (PointClick2 == true)
 	{
+		rect->vertex[3] = rect->temp[4];
+		rect->vertex[4] = rect->temp[5];
 		rect->vertex[3] = X;
 		rect->vertex[4] = Y;
+		rect->faraway[2] = abs(rect->temp[4] - rect->vertex[3]);
+		rect->faraway[3] = abs(rect->temp[5] - rect->vertex[4]);
 		rect->setVAO();
 	}
 
 	if (PointClick3 == true)
 	{
+		rect->vertex[6] = rect->temp[6];
+		rect->vertex[7] = rect->temp[7];
+		rect->vertex[15] = rect->temp[8];
+		rect->vertex[16] = rect->temp[9];
 		rect->vertex[6] = X;
 		rect->vertex[7] = Y;
 		rect->vertex[15] = X;
 		rect->vertex[16] = Y;
+		rect->faraway[4] = abs(rect->temp[6] - rect->vertex[6]);
+		rect->faraway[5] = abs(rect->temp[7] - rect->vertex[7]);
+		rect->faraway[10] = abs(rect->temp[8] - rect->vertex[15]);
+		rect->faraway[11] = abs(rect->temp[9] - rect->vertex[16]);
 		rect->setVAO();
 	}
 
 	if (PointClick4 == true)
 	{
+		rect->vertex[12] = rect->temp[10];
+		rect->vertex[13] = rect->temp[11];
 		rect->vertex[12] = X;
 		rect->vertex[13] = Y;
+		rect->faraway[8]= abs(rect->temp[10] - rect->vertex[12]);
+        rect->faraway[9]= abs(rect->temp[11] - rect->vertex[13]);
 		rect->setVAO();
 	}
 	glutPostRedisplay();
-
-	
-
 }
