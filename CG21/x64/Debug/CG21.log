@@ -1,0 +1,19 @@
+﻿  CG21.cpp
+C:\Users\jbong\source\repos\CG21\CG21\CG21.cpp(51,51): warning C4305: '인수': 'double'에서 '_Ty'(으)로 잘립니다.
+          with
+          [
+              _Ty=float
+          ]
+C:\Users\jbong\source\repos\CG21\CG21\CG21.cpp(51,45): warning C4305: '인수': 'double'에서 '_Ty'(으)로 잘립니다.
+          with
+          [
+              _Ty=float
+          ]
+C:\Users\jbong\source\repos\CG21\CG21\CG21.cpp(277,1): warning C4326: 'main'의 반환 형식이 'int'이어야 하는데 'void'입니다.
+C:\Users\jbong\source\repos\CG21\CG21\CG21.cpp(483,20): warning C4305: '+=': 'double'에서 'float'(으)로 잘립니다.
+C:\Users\jbong\source\repos\CG21\CG21\CG21.cpp(486,20): warning C4305: '-=': 'double'에서 'float'(으)로 잘립니다.
+C:\Users\jbong\source\repos\CG21\CG21\CG21.cpp(489,20): warning C4305: '+=': 'double'에서 'float'(으)로 잘립니다.
+C:\Users\jbong\source\repos\CG21\CG21\CG21.cpp(492,20): warning C4305: '-=': 'double'에서 'float'(으)로 잘립니다.
+C:\Users\jbong\source\repos\CG21\CG21\CG21.cpp(495,20): warning C4305: '+=': 'double'에서 'float'(으)로 잘립니다.
+C:\Users\jbong\source\repos\CG21\CG21\CG21.cpp(498,20): warning C4305: '-=': 'double'에서 'float'(으)로 잘립니다.
+  CG21.vcxproj -> C:\Users\jbong\source\repos\CG21\x64\Debug\CG21.exe

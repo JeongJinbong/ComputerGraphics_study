@@ -15,17 +15,17 @@
     </Filter>
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="CG21.cpp">
+      <Filter>소스 파일</Filter>
+    </ClCompile>
+  </ItemGroup>
+  <ItemGroup>
     <None Include="vertex.glsl">
       <Filter>소스 파일</Filter>
     </None>
     <None Include="fragment.glsl">
       <Filter>소스 파일</Filter>
     </None>
-  </ItemGroup>
-  <ItemGroup>
-    <ClCompile Include="CG20.cpp">
-      <Filter>소스 파일</Filter>
-    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="std.h">

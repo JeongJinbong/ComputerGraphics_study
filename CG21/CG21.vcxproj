@@ -21,8 +21,8 @@
   <PropertyGroup Label="Globals">
     <VCProjectVersion>17.0</VCProjectVersion>
     <Keyword>Win32Proj</Keyword>
-    <ProjectGuid>{0978d539-c42b-4925-8f4b-1343461b72a3}</ProjectGuid>
-    <RootNamespace>CG20</RootNamespace>
+    <ProjectGuid>{b7efbb6c-907c-437a-b234-ac366fc28772}</ProjectGuid>
+    <RootNamespace>CG21</RootNamespace>
     <WindowsTargetPlatformVersion>10.0</WindowsTargetPlatformVersion>
   </PropertyGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.Default.props" />
@@ -128,11 +128,11 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
-    <None Include="fragment.glsl" />
-    <None Include="vertex.glsl" />
+    <ClCompile Include="CG21.cpp" />
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="CG20.cpp" />
+    <None Include="fragment.glsl" />
+    <None Include="vertex.glsl" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="std.h" />

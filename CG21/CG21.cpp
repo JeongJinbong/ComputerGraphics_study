@@ -21,12 +21,14 @@ float cameraPosY = 3.0f;
 
 float cameraRotation = 0.0f;
 
-
 GLvoid drawScene();
 GLvoid Reshape(int w, int h);
 GLvoid Keyboard(unsigned char key, int x, int y);
 GLvoid Mouse(int button, int state, int x, int y);
 GLvoid Motion(int x, int y);
+
+void MyDisplay();
+
 
 
 GLint width, height;
@@ -160,7 +162,7 @@ const float vertex[] =
 };
 
 const float color[] =
-{ 
+{
 	0.5f, 0.0f, 0.5f,//4
 	0.0f, 0.0f, 1.0f,//0
 	0.0f, 0.0f, 0.0f,//3
@@ -273,7 +275,7 @@ void InitBuffer()
 
 void main(int argc, char** argv)	//--- 윈도우 출력하고 콜백함수 설정
 {
-	width = 800;
+	width = 1024;
 	height = 800;
 	//--- 윈도우 생성하기
 	glutInit(&argc, argv);
@@ -285,7 +287,7 @@ void main(int argc, char** argv)	//--- 윈도우 출력하고 콜백함수 설정
 	glewExperimental = GL_TRUE;
 	glewInit();
 	make_shaderProgram();
-	glutDisplayFunc(drawScene);
+	glutDisplayFunc(MyDisplay);
 	glutReshapeFunc(Reshape);
 	glutMouseFunc(Mouse);
 	glutKeyboardFunc(Keyboard);
@@ -363,28 +365,10 @@ void make_shaderProgram()
 GLvoid drawScene()
 //--- 콜백 함수: 그리기 콜백 함수
 {
-	//--- 변경된 배경색 설정
-	glClearColor(1.0, 1.0, 1.0, 1.0f);
-	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
-
-	//--- 렌더링 파이프라인에 세이더 불러오기
 	glUseProgram(shaderProgramID);
 
-	glm::mat4 projection = glm::mat4(1.0f);
-	projection = glm::perspective(glm::radians(45.0f), 1.0f, 0.1f, 50.0f); //--- 투영 공간 설정: fovy, aspect, near, far
-	projection = glm::translate(projection, glm::vec3(0.0, 0.0, -5.0)); //--- 공간을 z축 이동
-	unsigned int projectionLocation = glGetUniformLocation(shaderProgramID, "projection");
-	glUniformMatrix4fv(projectionLocation, 1, GL_FALSE, &projection[0][0]);
-
-	glm::vec3 cameraPos = glm::vec3(cameraPosX, cameraPosY, cameraPosZ); //--- 카메라 위치
-	glm::vec3 cameraDirection = glm::vec3(0.0f, 0.0f, 0.0f); //--- 카메라 바라보는 방향
-	glm::vec3 cameraUp = glm::vec3(0.0f, 1.0f, 0.0f); //--- 카메라 위쪽 방향
-	glm::mat4 view = glm::mat4(1.0f);
-
-	view = glm::lookAt(cameraPos, cameraDirection, cameraUp);
-	view = glm::rotate(view, glm::radians(cameraRotation), glm::vec3(0.0, 1.0, 0.0));
-	unsigned int viewLocation = glGetUniformLocation(shaderProgramID, "viewTransform"); //--- 뷰잉 변환 설정
-	glUniformMatrix4fv(viewLocation, 1, GL_FALSE, &view[0][0]);
+	//--- 변경된 배경색 설정
+	//--- 렌더링 파이프라인에 세이더 불러오기
 
 	glm::mat4 Rx = glm::mat4(1.0f);
 	glm::mat4 Ry = glm::mat4(1.0f);
@@ -417,15 +401,69 @@ GLvoid drawScene()
 	Rx = glm::rotate(Rx, glm::radians(xRotate), glm::vec3(1.0, 0.0, 0.0));
 	Ry = glm::rotate(Ry, glm::radians(yRotate), glm::vec3(0.0, 1.0, 0.0));
 	Rz = glm::rotate(Rz, glm::radians(zRotate), glm::vec3(0.0, 0.0, 1.0));
-	self_Ry = glm::rotate(Ry, glm::radians(self_yRotate), glm::vec3(0.0, 1.0, 0.0));
-	TR = (Rx * Ry * Rz) * (Tx* self_Ry);
+	self_Ry = glm::rotate(self_Ry, glm::radians(self_yRotate), glm::vec3(0.0, 1.0, 0.0));
+	TR = (Rx * Ry * Rz) * (Tx * self_Ry);
 
 	glUniformMatrix4fv(modelLocation, 1, GL_FALSE, glm::value_ptr(TR));
 	glBindVertexArray(m_vao);
 	glDrawArrays(GL_TRIANGLES, 0, 6 * 4);
 
-	glutSwapBuffers(); //--- 화면에 출력하기
+	
 }
+
+void MyDisplay()
+{
+	glUseProgram(shaderProgramID);
+	glClearColor(1.0, 1.0, 1.0, 1.0f);
+	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+	glViewport(0, 200, width / 2, height / 2);
+
+	glm::mat4 projection = glm::mat4(1.0f);
+	projection = glm::perspective(glm::radians(45.0f), 1.0f, 0.1f, 50.0f); //--- 투영 공간 설정: fovy, aspect, near, far
+	projection = glm::translate(projection, glm::vec3(0.0, 0.0, -5.0)); //--- 공간을 z축 이동
+	unsigned int projectionLocation = glGetUniformLocation(shaderProgramID, "projection");
+	glUniformMatrix4fv(projectionLocation, 1, GL_FALSE, &projection[0][0]);
+
+	glm::vec3 cameraPos = glm::vec3(cameraPosX, cameraPosY, cameraPosZ); //--- 카메라 위치
+	glm::vec3 cameraDirection = glm::vec3(0.0f, 0.0f, 0.0f); //--- 카메라 바라보는 방향
+	glm::vec3 cameraUp = glm::vec3(0.0f, 1.0f, 0.0f); //--- 카메라 위쪽 방향
+	glm::mat4 view = glm::mat4(1.0f);
+
+	view = glm::lookAt(cameraPos, cameraDirection, cameraUp);
+	view = glm::rotate(view, glm::radians(cameraRotation), glm::vec3(0.0, 1.0, 0.0));
+	unsigned int viewLocation = glGetUniformLocation(shaderProgramID, "viewTransform"); //--- 뷰잉 변환 설정
+	glUniformMatrix4fv(viewLocation, 1, GL_FALSE, &view[0][0]);
+
+	drawScene();
+
+	glViewport(width/2 ,0 , width/2, height/2);
+
+	glm::vec3 cameraPos2 = glm::vec3(0.0f, 0.0f, 1.0f); //--- 카메라 위치
+	view = glm::lookAt(cameraPos2, cameraDirection, cameraUp);
+	view = glm::rotate(view, glm::radians(cameraRotation), glm::vec3(0.0, 1.0, 0.0));
+	glUniformMatrix4fv(viewLocation, 1, GL_FALSE, &view[0][0]);
+	projection = glm::ortho(-2.0f, 2.0f, -2.0f, 2.0f, -2.0f, 200.0f); //--- 투영 공간 설정 
+	glUniformMatrix4fv(projectionLocation, 1, GL_FALSE, &projection[0][0]);
+	drawScene();
+
+
+	glViewport(width / 2, height/2, width / 2, height / 2);
+
+	glm::vec3 cameraPos3 = glm::vec3(0.0f, 3.0f, 0.0f); //--- 카메라 위치
+	cameraUp = glm::vec3(0.0f, 0.0f, 1.0f);
+	view = glm::lookAt(cameraPos3, cameraDirection, cameraUp);
+	view = glm::rotate(view, glm::radians(cameraRotation), glm::vec3(0.0, 1.0, 0.0));
+	glUniformMatrix4fv(viewLocation, 1, GL_FALSE, &view[0][0]);
+	projection = glm::ortho(-2.0f, 2.0f, -2.0f, 2.0f, -2.0f, 200.0f); //--- 투영 공간 설정 
+	glUniformMatrix4fv(projectionLocation, 1, GL_FALSE, &projection[0][0]);
+	drawScene();
+
+	glutSwapBuffers(); //--- 화면에 출력하기
+
+}
+
+
+
 
 //--- 다시그리기 콜백 함수
 GLvoid Reshape(int w, int h)
